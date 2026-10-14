@@ -1,0 +1,31 @@
+# The trading strategy the co-pilot watches for, grades your trades against, and uses as the research baseline.
+#
+# DEFAULT = a common ICT intraday model. During onboarding the AI asks you to describe YOUR strategy and rewrites
+# this file (see AGENTS.md). Every key below maps 1:1 to a field of RuleSet in src/copilot/setup_engine/poc_fvg.py;
+# an unknown key stops the program with an error (nothing is silently ignored).
+
+[strategy]
+name = "ICT FVG (default)"
+description = """
+Default ICT-style model (replace with your own during onboarding):
+1. Bias: trade in the direction of the 5-minute market structure (last BOS / CHoCH).
+2. Time: only inside the London (02:00-05:00 ET) and New York AM (09:30-11:00 ET) killzones.
+3. Zone: a 5-minute fair value gap (FVG) formed in the direction of the bias.
+4. Entry: price returns into the FVG and a 1-minute candle rejects it (wick into the gap, close back out).
+5. Optional reversal: against the bias only after a liquidity sweep / rejection at the FVG (Judas swing).
+6. Stop: beyond the rejection candle's wick. Target: 2R. No trade if an opposing FVG blocks the path to 2R.
+"""
+
+[rules]
+use_structure = true               # 1. trade with the 5m structure (BOS / CHoCH)
+sessions = ["LONDON", "NY_AM"]     # 2. killzones (ASIA, LONDON, NY_AM, NY_PM -- see session_engine/sessions.py)
+require_poc = false                # 3. any 5m FVG is a zone (no volume-profile POC overlap needed)
+use_volume_support = false         #    no volume-profile filter (not part of the ICT model)
+confirmations = ["REJECTION"]      # 4. 1m rejection candle inside the FVG
+allow_reversal = true              # 5. counter-structure trades only with a rejection at the zone
+target_r = 2.0                     # 6. fixed 2R target
+use_opposing_fvg = true            # 6. skip when an opposing 5m FVG sits before the target
+
+[plan]
+# Extra rules used only when GRADING your own trades (your "trading plan"); alerts use [rules].
+retest_reversal = true             # second test of an FVG that fails to break counts as a valid reversal entry

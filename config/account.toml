@@ -1,0 +1,84 @@
+# Account & risk limits. EVERY value must come from you or from your prop firm's written rules -- never guessed.
+# "UNKNOWN" is deliberate: the risk gate FAILS CLOSED on any UNKNOWN value, so no trade-setup alert is issued until
+# this file is complete. During onboarding the AI fills it in with you (see AGENTS.md) and notes the source of
+# every value in a comment (e.g. "# S1: firm rules page", "# S2: my answer").
+
+[account]
+firm = "UNKNOWN"                   # e.g. a prop firm or your own broker account
+platform = "UNKNOWN"               # e.g. Tradovate (read through TradingView's trading panel)
+phase = "UNKNOWN"                  # evaluation | funded | personal
+plan = "UNKNOWN"
+size_usd = "UNKNOWN"
+profit_target_usd = "UNKNOWN"
+min_days_to_pass = "UNKNOWN"
+flat_by_et = "UNKNOWN"             # e.g. "16:59" -- all positions closed by this time (ET)
+
+[account.drawdown]
+max_drawdown_usd = "UNKNOWN"
+type = "UNKNOWN"                   # trailing_intraday | trailing_eod | static
+trail_stops_at = "UNKNOWN"         # e.g. "never" or a balance at which the trailing stops
+daily_loss_limit_usd = "UNKNOWN"   # a number, or "none"
+
+[account.contracts]
+max_contracts_mini = "UNKNOWN"
+max_contracts_micro = "UNKNOWN"
+scaling_rule = "UNKNOWN"           # "none" or a description
+
+[account.other_rules]
+reset_fee = "UNKNOWN"
+consistency_rule_pct = "UNKNOWN"
+consistency_rule_definition = "UNKNOWN"
+consistency_rule_applies_to = "UNKNOWN"   # evaluation | funded
+news_trading_allowed = "UNKNOWN"   # true / false
+overnight_holding_allowed = "UNKNOWN"
+
+[personal]                         # your own rules; may be stricter than the firm's
+contracts_per_trade_min = "UNKNOWN"
+contracts_per_trade_max = "UNKNOWN"
+contracts_unit = "UNKNOWN"         # micro | mini
+max_trades_per_day = "UNKNOWN"
+min_rr = "UNKNOWN"
+daily_stop_usd = "UNKNOWN"         # a number, or "none"
+max_loss_per_trade_frac_of_buffer = "UNKNOWN"   # e.g. 0.25 = one trade may lose at most 1/4 of the remaining buffer
+display_timezone = "America/New_York"   # storage is always UTC
+max_open_positions = "UNKNOWN"
+last_entry_time_et = "UNKNOWN"     # e.g. "16:00"
+news_blackout_minutes_before = "UNKNOWN"
+news_blackout_minutes_after = "UNKNOWN"
+# Emotional-trading (tilt) warnings. Warning only: nothing is blocked and the system never touches orders.
+tilt_consecutive_losses = 2        # warn when today's losing streak reaches this
+tilt_reentry_minutes = 10          # warn when a new trade starts within this many minutes of a losing exit
+tilt_warn_last_trade = true        # heads-up on the last allowed trade (max_trades_per_day), warning beyond it
+tilt_warn_switch_after_loss = true # warn when the next trade after a loss is in a different instrument
+
+[costs]
+# Round-trip commission per contract. Derive it from a real fill / statement (the system re-checks it whenever
+# imported trades reconcile a balance change). UNKNOWN blocks sizing.
+commission_roundtrip_per_contract_usd = "UNKNOWN"
+commission_roundtrip_by_root = { }   # e.g. { MGC = 1.34, MNQ = 1.34 } for research (R net of fees)
+
+[research]
+# Instruments pooled in the automatic strategy research (needs their 5m + 1m bars stored by the monitor).
+roots = []                         # e.g. ["MNQ", "MGC"]
+# 5m look-back must start after these times (a contract-roll jump the system has no roll record for).
+context_after = { }
+
+[broker]
+tradovate_report_timezone = "UNKNOWN"   # the timezone shown in your Tradovate Performance export, e.g. "America/New_York"
+import_folders = []                # folders where Performance*.csv exports are auto-imported, e.g. ["C:/Users/you/Downloads"]
+
+[tradingview]
+# The chart layout the monitor watches (the id in the layout URL: tradingview.com/chart/<id>/). Other chart tabs are
+# read for bars only. Empty = the first chart tab.
+primary_layout = ""
+
+[instruments]
+traded = []                        # e.g. ["MNQ", "MGC"] -- supported today: MNQ, NQ, MGC, GC
+other = "none"
+
+[notion]
+# Optional Notion journal. Leave empty to disable. The integration token lives only in your environment
+# (scripts/SET_NOTION_TOKEN.cmd), never in this file or in chat.
+database_id = ""                   # 交易日誌 (trade journal) database
+research_database_id = ""          # 研究日誌 (research journal) database
+account_labels = { }               # display name per broker account id

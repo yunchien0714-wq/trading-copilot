@@ -1,0 +1,19 @@
+[project]
+name = "trading-copilot"
+version = "0.1.0"
+description = "AI trading co-pilot for discretionary futures day traders: setup alerts, risk gate, journal and strategy research (analysis only, never places orders)"
+requires-python = ">=3.12"
+dependencies = ["websockets>=12", "certifi"]
+
+# Not meant to be pip-installed: run from the checkout (scripts\start_monitor.ps1, or `python -m copilot` in src\).
+# Dependencies: requirements.txt.
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = ["live: needs TradingView Desktop running with --remote-debugging-port=9222"]
+# some environments auto-load a langsmith pytest plugin that is not needed here
+addopts = "-m 'not live' -p no:langsmith_plugin"

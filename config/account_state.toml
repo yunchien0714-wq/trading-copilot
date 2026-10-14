@@ -1,0 +1,13 @@
+# Balance, equity, open positions and observed trades are read automatically from the broker (via TradingView).
+#
+# Manual values are only needed when trades happened while the system was NOT watching:
+#
+# 1) TRAILING THRESHOLD (liquidation level) shown by your firm -- the system cannot know an intraday equity peak it
+#    did not see. Copy the number and the time you read it:
+# trailing_threshold_usd = 0.00
+# threshold_as_of = 2026-01-02T06:30:00-05:00      # ET with offset (-04:00 summer, -05:00 winter)
+#
+# 2) How many trades you placed today while unobserved (counts toward max_trades_per_day).
+#    Only needed if no Performance export is available (imports reconcile the count automatically):
+# unobserved_trades_today = 0
+# unobserved_trades_date = 2026-01-02   # trading day (starts 18:00 ET the evening before)
